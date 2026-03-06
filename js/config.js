@@ -19,56 +19,56 @@ const CONFIG = {
         //Level 3
         {
             wordsToAdvance: 8,
-            baseSpeed: 0.054,
+            baseSpeed: 0.053,
             maxWordsOnScreen: 1,
             description: "Building confidence"
         },
         //Level 4
         {
             wordsToAdvance: 10,
-            baseSpeed: 0.054,
+            baseSpeed: 0.053,
             maxWordsOnScreen: 2,
             description: "Picking up pace"
         },
         //Level 5
         {
-            wordsToAdvance: 15,
-            baseSpeed: 0.058,
+            wordsToAdvance: 12,
+            baseSpeed: 0.056,
             maxWordsOnScreen: 2,
             description: "Getting interesting"
         },
         //Level 6
         {
             wordsToAdvance: 15,
-            baseSpeed: 0.058,
+            baseSpeed: 0.059,
             maxWordsOnScreen: 2,
             description: "Finding your rhythm"
         },
         //Level 7
         {
             wordsToAdvance: 15,
-            baseSpeed: 0.062,
+            baseSpeed: 0.059,
             maxWordsOnScreen: 3,
             description: "Challenge mode"
         },
         //Level 8
         {
             wordsToAdvance: 18,
-            baseSpeed: 0.066,
+            baseSpeed: 0.062,
             maxWordsOnScreen: 3,
             description: "Speed demon"
         },
         //Level 9
         {
             wordsToAdvance: 20,
-            baseSpeed: 0.07,
+            baseSpeed: 0.065,
             maxWordsOnScreen: 3,
             description: "Almost there!"
         },
         //Level 10
         {
             wordsToAdvance: 25,
-            baseSpeed: 0.07,
+            baseSpeed: 0.062,
             maxWordsOnScreen: 4,
             description: "Final challenge!"
         }

@@ -1687,12 +1687,12 @@ class TypingGame {
             this.elements.performanceInsight.innerHTML = `
                 <div class="metrics">
                     <div class="metric">
-                        <span class="metric-label">Accuracy:</span>
-                        <span class="metric-value">${accuracy}%</span>
-                    </div>
-                    <div class="metric">
                         <span class="metric-label">WPM:</span>
                         <span class="metric-value">${wpm}</span>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Accuracy:</span>
+                        <span class="metric-value">${accuracy}%</span>
                     </div>
                     <div class="metric">
                         <span class="metric-label">Reaction:</span>
@@ -1788,7 +1788,7 @@ class TypingGame {
             const masteredThisSession = this.state.masteredWords.length - this.sessionStartMasteredCount;
             
             if (masteredThisSession > 0) {
-                this.elements.growthText.textContent = `✨ +${masteredThisSession} new words this session!`;
+                this.elements.growthText.textContent = `+${masteredThisSession} new words this session!`;
                 this.elements.growthText.style.color = '#48bb78';
             } else {
                 this.elements.growthText.textContent = 'Keep typing to learn new words!';
