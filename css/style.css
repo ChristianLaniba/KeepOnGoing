@@ -90,12 +90,12 @@ body::after {
     height: 100%;
     background-image: url('../images/page_background.png');
     background-repeat: repeat;
-    background-size: 300%;
+    background-size: 400%;
     background-position: 0 0;
-    opacity: 0.9;
+    opacity: 0.8;
     pointer-events: none;
     z-index: -1;
-    animation: diagonalMove 60s linear infinite;
+    animation: diagonalMove 720s linear infinite;
 }
 
 /* Diagonal moving background animation */
@@ -2129,6 +2129,163 @@ body::after {
         font-size: 0.9rem;
         padding: 5px 12px;
     }
+    
+    /* ============================================
+       OVERLAY REDUCTIONS - 75% SIZE ON MOBILE
+       ============================================ */
+    
+    /* Pause Menu - 75% size */
+    .pause-content {
+        transform: scale(0.75);
+        min-width: min(255px, 60vw);
+        padding: 15px 20px;
+    }
+    
+    .pause-title {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+    }
+    
+    .btn-pause {
+        font-size: 0.9rem;
+        padding: 5px 14px;
+        margin: 5px 0;
+    }
+    
+    /* Level Complete Overlay - 75% size */
+    .level-complete-content {
+        transform: scale(0.75);
+        min-width: min(280px, 65vw);
+        padding: 8px 15px;
+    }
+    
+    .level-complete-title {
+        font-size: 1.5rem;
+        margin-bottom: 12px;
+    }
+    
+    .next-level-title {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+    
+    .next-level-title span {
+        font-size: 1rem;
+    }
+    
+    .difficulty-card {
+        padding: 8px 12px;
+        margin-bottom: 8px;
+    }
+    
+    .difficulty-value {
+        font-size: 1.5rem;
+    }
+    
+    .difficulty-description {
+        font-size: 0.7rem;
+        padding: 4px 8px;
+    }
+    
+    .next-level-stats {
+        gap: 5px;
+        margin-top: 8px;
+    }
+    
+    .stat-pill {
+        padding: 4px 8px;
+        min-width: 45px;
+    }
+    
+    .stat-pill-label {
+        font-size: 0.4rem;
+        margin-bottom: 2px;
+    }
+    
+    .stat-pill-value {
+        font-size: 0.7rem;
+    }
+    
+    .btn-level-continue {
+        font-size: 0.9rem;
+        padding: 6px 15px;
+        margin-top: 6px;
+    }
+    
+    /* Game Over Modal - 75% size */
+    .game-over-modal {
+        transform: translate(-50%, -50%) scale(0.75);
+        width: min(252px, 65vw);
+        padding: 14px 16px;
+    }
+    
+    .game-over-icon {
+        font-size: 2rem;
+        margin-bottom: 6px;
+    }
+    
+    .game-over-title {
+        font-size: 1.4rem;
+        margin-bottom: 6px;
+    }
+    
+    .game-over-stats {
+        padding: 8px 12px;
+        margin-bottom: 12px;
+    }
+    
+    .stat-row {
+        margin-bottom: 5px;
+        padding: 3px 6px;
+    }
+    
+    .stat-label {
+        font-size: 0.6rem;
+    }
+    
+    .stat-label span {
+        font-size: 0.7rem;
+    }
+    
+    .stat-value {
+        font-size: 0.7rem;
+    }
+    
+    .game-over-actions {
+        gap: 5px;
+        margin-top: 12px;
+    }
+    
+    .btn-game-over {
+        padding: 5px 12px;
+        font-size: 0.6rem;
+        min-width: 75px;
+    }
+    
+    .game-over-tips {
+        margin-top: 8px;
+        padding: 6px;
+    }
+    
+    .tip-text {
+        font-size: 0.55rem;
+    }
+    
+    .tip-icon {
+        font-size: 0.65rem;
+    }
+    
+    /* Dark overlay for modal background - ensure it covers properly */
+    .game-overlay-dark {
+        backdrop-filter: blur(5px);
+    }
+    
+    /* Ensure the scaling doesn't affect positioning */
+    .pause-menu,
+    .level-complete-overlay {
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 /* Even smaller phones */
@@ -2154,8 +2311,20 @@ body::after {
     .game-canvas-container {
         width: 98%;
     }
+    
+    /* Further reduce overlays on very small screens */
+    .pause-content {
+        transform: scale(0.65);
+    }
+    
+    .level-complete-content {
+        transform: scale(0.65);
+    }
+    
+    .game-over-modal {
+        transform: translate(-50%, -50%) scale(0.65);
+    }
 }
-
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     *,

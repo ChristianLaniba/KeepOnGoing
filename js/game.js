@@ -216,7 +216,7 @@ class TypingGame {
         inputContainer.id = 'playfieldInputContainer';
         inputContainer.innerHTML = `
             <input type="text" id="playfieldWordInput" class="playfield-word-input" 
-                   placeholder="Type the word here..." 
+                   placeholder="Type here..." 
                    autocomplete="off" 
                    disabled>
         `;
