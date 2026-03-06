@@ -249,12 +249,25 @@ class TypingGame {
         pauseTip.id = 'pauseTip';
         pauseTip.textContent = 'Press ` to pause (Desktop)';
         
+        // ===== NEW: Create mobile pause button =====
+        const mobilePauseButton = document.createElement('div');
+        mobilePauseButton.className = 'mobile-pause-button';
+        mobilePauseButton.id = 'mobilePauseButton';
+        mobilePauseButton.setAttribute('aria-label', 'Pause game');
+        mobilePauseButton.setAttribute('role', 'button');
+        mobilePauseButton.setAttribute('tabindex', '0');
+        mobilePauseButton.innerHTML = `
+            <span class="pause-icon">⏸️</span>
+        `;
+        // ============================================
+        
         // Add all elements to game canvas container
         this.elements.gameCanvasContainer.appendChild(startContainer);
         this.elements.gameCanvasContainer.appendChild(inputContainer);
         this.elements.gameCanvasContainer.appendChild(topProgressContainer);
         this.elements.gameCanvasContainer.appendChild(lifeSpritesContainer);
         this.elements.gameCanvasContainer.appendChild(pauseTip);
+        this.elements.gameCanvasContainer.appendChild(mobilePauseButton); // Add the button
         
         // Cache the new elements
         this.elements.inPlayfieldStart = document.getElementById('inPlayfieldStart');
@@ -277,10 +290,32 @@ class TypingGame {
         // Cache pause tip
         this.elements.pauseTip = document.getElementById('pauseTip');
         
+        // ===== NEW: Cache mobile pause button =====
+        this.elements.mobilePauseButton = document.getElementById('mobilePauseButton');
+        // ==========================================
+        
         // Add event listener for the new start button
         if (this.elements.playfieldStartBtn) {
             this.elements.playfieldStartBtn.addEventListener('click', () => this.startGame());
         }
+        
+        // ===== NEW: Add event listener for mobile pause button =====
+        if (this.elements.mobilePauseButton) {
+            this.elements.mobilePauseButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                this.togglePause();
+            });
+            
+            // Also handle keyboard/tab interaction for accessibility
+            this.elements.mobilePauseButton.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.togglePause();
+                }
+            });
+        }
+        // =========================================================
     }
 
     // Update life sprites based on current lives
@@ -544,6 +579,13 @@ class TypingGame {
             this.elements.wordInput.value = '';
         }
         
+        // ===== NEW: Reset mobile pause button =====
+        if (this.elements.mobilePauseButton) {
+            this.elements.mobilePauseButton.querySelector('.pause-icon').textContent = '⏸️';
+            this.elements.mobilePauseButton.style.background = '';
+        }
+        // ==========================================
+        
         this.hideTextBox();
         
         this.renderInterests();
@@ -691,6 +733,13 @@ class TypingGame {
             this.elements.wordInput.disabled = false;
         }
         
+        // ===== NEW: Make sure mobile pause button is visible and reset =====
+        if (this.elements.mobilePauseButton) {
+            this.elements.mobilePauseButton.style.display = 'flex';
+            this.elements.mobilePauseButton.querySelector('.pause-icon').textContent = '⏸️';
+        }
+        // ================================================================
+        
         this.showTextBox();
         
         this.showStatus(`Level 1: ${this.state.levelDescription}`, 'info', 3000);
@@ -732,8 +781,20 @@ class TypingGame {
         if (this.elements.pauseMenu) {
             if (this.state.paused) {
                 this.elements.pauseMenu.classList.remove('hidden');
+                // ===== NEW: Change pause button icon when paused =====
+                if (this.elements.mobilePauseButton) {
+                    this.elements.mobilePauseButton.querySelector('.pause-icon').textContent = '▶️';
+                    this.elements.mobilePauseButton.style.background = 'rgba(102, 126, 234, 0.8)';
+                }
+                // ==================================================
             } else {
                 this.elements.pauseMenu.classList.add('hidden');
+                // ===== NEW: Change pause button icon back when resuming =====
+                if (this.elements.mobilePauseButton) {
+                    this.elements.mobilePauseButton.querySelector('.pause-icon').textContent = '⏸️';
+                    this.elements.mobilePauseButton.style.background = '';
+                }
+                // ======================================================
             }
         }
         
@@ -1896,8 +1957,7 @@ class TypingGame {
                 </div>
             </div>
             <div class="game-over-actions">
-                <button class="btn-game-over primary" id="tryAgainBtnCanvas">Try Again</button>
-                <button class="btn-game-over secondary" id="menuBtnCanvas">Main Menu</button>
+                <button class="btn-game-over" id="tryAgainBtnCanvas">Try Again</button>
             </div>
         `;
         

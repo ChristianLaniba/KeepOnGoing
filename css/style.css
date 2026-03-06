@@ -90,12 +90,12 @@ body::after {
     height: 100%;
     background-image: url('../images/page_background.png');
     background-repeat: repeat;
-    background-size: 400%;
+    background-size: 500%;
     background-position: 0 0;
     opacity: 0.8;
     pointer-events: none;
     z-index: -1;
-    animation: diagonalMove 720s linear infinite;
+    animation: diagonalMove 360s linear infinite;
 }
 
 /* Diagonal moving background animation */
@@ -457,9 +457,9 @@ body::after {
 
 @media (max-width: 700px) {
     .ai-insights-container {
-        flex-direction: column;
+        flex-direction: row;
         gap: 10px;
-        padding: 12% 6% 15% 6%;
+        padding: 16% 8% 15% 8%;
         overflow-y: auto;
     }
     
@@ -753,7 +753,6 @@ body::after {
 
 /* Game Area */
 .game-area {
-    background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
     border-radius: var(--border-radius);
     padding: 0;
     margin-bottom: clamp(15px, 3vw, 25px);
@@ -763,13 +762,12 @@ body::after {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #0f172a;
 }
 
 /* Game Canvas Container - Use viewport-based sizing */
 .game-canvas-container {
     position: relative;
-    width: min(75%, 1024.5px);
+    width: min(75%);
     max-width: min(1024.5px, 95vw);
     margin: 0 auto;
     overflow: hidden;
@@ -1369,18 +1367,83 @@ body::after {
 .pause-tip {
     position: absolute;
     top: 2%;
-    left: 2%;
+    left: 1%;
     z-index: 35;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     color: rgba(255, 255, 255, 0.9);
     padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px);
     border-radius: 30px;
-    font-size: clamp(0.6rem, 2vw, 0.8rem);
+    font-size: clamp(0.6rem, 2vw, 0.6rem);
     font-weight: 500;
     border: 1px solid rgba(255, 255, 255, 0.2);
     pointer-events: none;
     box-shadow: var(--shadow-sm);
+}
+
+/* Mobile Pause Button */
+.mobile-pause-button {
+    position: absolute;
+    top: 2%;
+    left: 2%;
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 16, 38, 0.8);
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 36;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.mobile-pause-button:hover {
+    transform: scale(1.05);
+    background: rgba(24, 36, 57, 0.9);
+}
+
+.mobile-pause-button:active {
+    transform: scale(0.95);
+}
+
+.mobile-pause-button .pause-icon {
+    color: white;
+    font-size: 24px;
+    line-height: 1;
+}
+
+@media (min-width: 769px) {
+    .mobile-pause-button {
+        display: none !important;
+    }
+}
+
+
+/* Show on mobile, hide on desktop */
+@media (max-width: 768px) {
+    .pause-tip {
+        display: none !important;
+    }
+    
+    .mobile-pause-button {
+        display: flex;
+    }
+}
+
+/* Even smaller phones */
+@media (max-width: 480px) {
+    .mobile-pause-button {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .mobile-pause-button .pause-icon {
+        font-size: 22px;
+    }
 }
 
 /* Falling Words - Scale with canvas */
@@ -1864,7 +1927,7 @@ body::after {
     padding: clamp(7px, 1.5vw, 9px) clamp(15px, 3vw, 22px);
     border: none;
     border-radius: 45px;
-    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+    font-size: clamp(1.4rem, 2.5vw, 0.9rem);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -1873,28 +1936,16 @@ body::after {
     min-width: clamp(100px, 25vw, 120px);
 }
 
-.btn-game-over.primary {
+.btn-game-over {
     background: rgba(24, 36, 57);
     color: white;
     box-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
     animation: tryAgainPulse 2s infinite;
 }
 
-.btn-game-over.primary:hover {
+.btn-game-over:hover {
     transform: scale(1.05);
     box-shadow: 0 0 30px rgba(102, 126, 234, 0.8);
-}
-
-.btn-game-over.secondary {
-    background: rgba(24, 36, 57);
-    color: white;
-    border: 1px solid rgba(102, 126, 234, 0.5);
-}
-
-.btn-game-over.secondary:hover {
-    background: rgba(102, 126, 234, 0.2);
-    transform: scale(1.05);
-    border-color: #667eea;
 }
 
 /* Tips section */
@@ -2050,15 +2101,15 @@ body::after {
     }
 }
 
-/* Mobile-specific overrides - Alternative with adjusted font sizes */
+/*Mobile Reponsiveness*/
 @media (max-width: 768px) {
-    /* Interests Section - 50% size text */
+    /* Interests Section*/
     .interest-text {
-        font-size: 2rem; /* Approximately 50% of 3.5rem */
+        font-size: 2rem;
     }
     
     .interests-container {
-        padding: 24% 3% 14% 3%;
+        padding: 25% 3% 14% 3%;
         gap: 15px;
     }
     
@@ -2067,15 +2118,14 @@ body::after {
         min-height: 50px;
     }
     
-    /* AI Insights Section - 50% size */
+    /* AI Insights Section */
     .ai-insights-container {
-        padding: 14% 5% 8% 5%;
+        padding: 22% 8% 8% 10%;
     }
     
     .ai-insight-item {
         padding: 12px 8px;
         min-height: 120px;
-        min-width: 50px;
     }
     
     .ai-insight-header h3 {
@@ -2087,7 +2137,7 @@ body::after {
     }
     
     .ai-insight-body {
-        font-size: 0.6rem;
+        font-size: 0.8rem;
     }
     
     .metric {
@@ -2116,7 +2166,7 @@ body::after {
     
     /* Game canvas adjustments */
     .game-canvas-container {
-        width: 95%;
+        width: 100%;
     }
     
     /* Status text */
@@ -2129,48 +2179,54 @@ body::after {
         font-size: 0.9rem;
         padding: 5px 12px;
     }
+
+    .progress-bar-top {
+        height: 14px;
+    }
+
+    .life-sprites-container {
+    top: 3%;
+    right: 0.5%;
+    transform: scale(0.85);
+    }
     
-    /* ============================================
-       OVERLAY REDUCTIONS - 75% SIZE ON MOBILE
-       ============================================ */
     
-    /* Pause Menu - 75% size */
+    /* Pause Menu*/
     .pause-content {
-        transform: scale(0.75);
         min-width: min(255px, 60vw);
         padding: 15px 20px;
     }
     
     .pause-title {
-        font-size: 1.5rem;
-        margin-bottom: 12px;
+        font-size: 2.5rem;
+        margin-bottom: 10px;
     }
     
     .btn-pause {
-        font-size: 0.9rem;
+        font-size: 1.8rem;
         padding: 5px 14px;
         margin: 5px 0;
     }
     
-    /* Level Complete Overlay - 75% size */
+    /* Level Complete Overlay*/
     .level-complete-content {
-        transform: scale(0.75);
+        transform: scale(0.85);
         min-width: min(280px, 65vw);
         padding: 8px 15px;
     }
     
     .level-complete-title {
-        font-size: 1.5rem;
-        margin-bottom: 12px;
+        font-size: 2rem; /*LEVEL COMPLETE!*/
+        margin-bottom: -14px;
     }
     
     .next-level-title {
-        font-size: 0.9rem;
-        margin-bottom: 8px;
+        font-size: 1.5rem; /*NEXT LEVEL:*/
+        margin-bottom: 4px;
     }
     
     .next-level-title span {
-        font-size: 1rem;
+        font-size: 1.5rem; /*LEVEL na sunod*/
     }
     
     .difficulty-card {
@@ -2179,11 +2235,11 @@ body::after {
     }
     
     .difficulty-value {
-        font-size: 1.5rem;
+        font-size: 2.5rem;
     }
     
     .difficulty-description {
-        font-size: 0.7rem;
+        font-size: 2rem;
         padding: 4px 8px;
     }
     
@@ -2198,25 +2254,25 @@ body::after {
     }
     
     .stat-pill-label {
-        font-size: 0.4rem;
-        margin-bottom: 2px;
+        font-size: 1rem;
+        margin-bottom: 1px;
     }
     
     .stat-pill-value {
-        font-size: 0.7rem;
+        font-size: 1rem;
     }
     
     .btn-level-continue {
-        font-size: 0.9rem;
+        font-size: 1.4rem;
         padding: 6px 15px;
-        margin-top: 6px;
+        margin-top: 3px;
     }
     
-    /* Game Over Modal - 75% size */
+    /* Game Over Modal*/
     .game-over-modal {
-        transform: translate(-50%, -50%) scale(0.75);
+        transform: translate(-50%, -50%) scale(0.9);
         width: min(252px, 65vw);
-        padding: 14px 16px;
+        padding: 6px 14px;
     }
     
     .game-over-icon {
@@ -2225,12 +2281,12 @@ body::after {
     }
     
     .game-over-title {
-        font-size: 1.4rem;
+        font-size: 2.2rem;
         margin-bottom: 6px;
     }
     
     .game-over-stats {
-        padding: 8px 12px;
+        padding: 12px 12px;
         margin-bottom: 12px;
     }
     
@@ -2240,15 +2296,15 @@ body::after {
     }
     
     .stat-label {
-        font-size: 0.6rem;
+        font-size: 1.2rem;
     }
     
     .stat-label span {
-        font-size: 0.7rem;
+        font-size: 1.4rem;
     }
     
     .stat-value {
-        font-size: 0.7rem;
+        font-size: 1.4rem;
     }
     
     .game-over-actions {
@@ -2257,8 +2313,8 @@ body::after {
     }
     
     .btn-game-over {
-        padding: 5px 12px;
-        font-size: 0.6rem;
+        padding: 8px 12px;
+        font-size: 1.6rem;
         min-width: 75px;
     }
     
@@ -2314,17 +2370,18 @@ body::after {
     
     /* Further reduce overlays on very small screens */
     .pause-content {
-        transform: scale(0.65);
+        transform: scale(0.75);
     }
     
     .level-complete-content {
-        transform: scale(0.65);
+        transform: scale(0.75);
     }
     
     .game-over-modal {
-        transform: translate(-50%, -50%) scale(0.65);
+        transform: translate(-50%, -50%) scale(0.75);
     }
 }
+
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     *,
