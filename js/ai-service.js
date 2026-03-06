@@ -1,6 +1,3 @@
-/**
- * AI Service - Handles all Gemini API interactions
- */
 class AIService {
     constructor(apiKey) {
         this.apiKey = apiKey;

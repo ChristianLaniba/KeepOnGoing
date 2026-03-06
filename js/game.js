@@ -1,12 +1,3 @@
-/**
- * Main Game Class - Complete version with level customization
- * UPDATED: Fixed life regain logic (max 3 lives, only gain when below max)
- * UPDATED: Fixed Recommended Words, Common Mistakes, and Vocabulary Growth display
- * UPDATED: Progressive word length distribution based on level
- * UPDATED: Life regain based on correct letters in a row (50 letters = 1 life)
- * FIXED: Game over now properly shows modal inside canvas with blue theme
- * FIXED: Performance analysis now shows real data instead of placeholders
- */
 class TypingGame {
     constructor() {
         // Check if API key is set
