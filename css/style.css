@@ -90,7 +90,7 @@ body::after {
     height: 100%;
     background-image: url('../images/page_background.png');
     background-repeat: repeat;
-    background-size: 250%;
+    background-size: 300%;
     background-position: 0 0;
     opacity: 0.9;
     pointer-events: none;
