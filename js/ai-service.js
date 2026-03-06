@@ -38,7 +38,8 @@ class AIService {
             return words;
         } catch (error) {
             console.error('Word generation failed:', error);
-            return this.getFallbackWords(userData.level || 1);
+            // Pass interests to fallback
+            return this.getFallbackWords(userData.level || 1, userData.interests);
         }
     }
 
@@ -263,9 +264,9 @@ class AIService {
             console.error('Manual extraction failed:', error);
         }
         
-        // Ultimate fallback
-        console.log('Using fallback words');
-        return this.getFallbackWords(1);
+        // Ultimate fallback - use interest-specific fallback
+        console.log('Using interest-specific fallback words');
+        return this.getFallbackWords(1, ['general']);
     }
 
     // Parse performance response
@@ -307,55 +308,194 @@ class AIService {
     }
 
     /**
-     * Get fallback words based on level - UPDATED with progressive difficulty
+     * Get fallback words based on level and interests - IMPROVED with interest-specific sets
      */
-    getFallbackWords(level) {
-        // Word lists organized by difficulty/length
-        const wordLists = {
-            // Level 1-2: Short, simple words (3-4 letters)
-            beginner: [
+    getFallbackWords(level, interests = []) {
+        // Interest-specific word collections
+        const interestWordSets = {
+            // Science words
+            science: [
+                'atom', 'cell', 'gene', 'lab', 'theory', 'experiment', 'data', 'energy',
+                'molecule', 'gravity', 'force', 'motion', 'physics', 'chemistry', 'biology',
+                'microscope', 'telescope', 'planet', 'star', 'galaxy', 'orbit', 'gravity',
+                'evolution', 'species', 'habitat', 'ecosystem', 'climate', 'temperature',
+                'velocity', 'acceleration', 'momentum', 'friction', 'density', 'volume'
+            ],
+            
+            // Technology words
+            technology: [
+                'code', 'app', 'web', 'data', 'cloud', 'server', 'python', 'javascript',
+                'algorithm', 'software', 'hardware', 'robot', 'ai', 'machine', 'learning',
+                'computer', 'keyboard', 'screen', 'digital', 'network', 'internet',
+                'browser', 'website', 'database', 'security', 'encryption', 'password',
+                'interface', 'user', 'experience', 'design', 'development', 'programming',
+                'function', 'variable', 'array', 'object', 'class', 'method'
+            ],
+            
+            // Nature words
+            nature: [
+                'tree', 'leaf', 'root', 'branch', 'forest', 'jungle', 'desert', 'ocean',
+                'river', 'lake', 'mountain', 'valley', 'hill', 'cave', 'beach', 'coast',
+                'flower', 'grass', 'plant', 'seed', 'soil', 'water', 'air', 'wind',
+                'rain', 'snow', 'ice', 'sun', 'moon', 'sky', 'cloud', 'storm',
+                'animal', 'bird', 'fish', 'insect', 'mammal', 'reptile', 'amphibian'
+            ],
+            
+            // Space words
+            space: [
+                'star', 'moon', 'sun', 'planet', 'mars', 'earth', 'venus', 'jupiter',
+                'saturn', 'uranus', 'neptune', 'pluto', 'galaxy', 'universe', 'cosmos',
+                'asteroid', 'comet', 'meteor', 'orbit', 'gravity', 'telescope', 'astronaut',
+                'rocket', 'spacecraft', 'satellite', 'station', 'mission', 'launch',
+                'solar', 'lunar', 'eclipse', 'constellation', 'nebula', 'blackhole',
+                'lightyear', 'astronomy', 'celestial', 'interstellar'
+            ],
+            
+            // Animals words
+            animals: [
+                'cat', 'dog', 'fish', 'bird', 'rabbit', 'hamster', 'turtle', 'frog',
+                'lion', 'tiger', 'bear', 'wolf', 'fox', 'deer', 'moose', 'elk',
+                'elephant', 'giraffe', 'zebra', 'rhino', 'hippo', 'monkey', 'gorilla',
+                'kangaroo', 'koala', 'panda', 'sloth', 'otter', 'dolphin', 'whale',
+                'shark', 'octopus', 'crab', 'lobster', 'eagle', 'hawk', 'owl', 'crow',
+                'snake', 'lizard', 'crocodile', 'dinosaur', 'butterfly', 'dragonfly'
+            ],
+            
+            // Food words
+            food: [
+                'apple', 'banana', 'orange', 'grape', 'berry', 'lemon', 'lime', 'peach',
+                'pizza', 'pasta', 'bread', 'cheese', 'milk', 'eggs', 'butter', 'yogurt',
+                'chicken', 'beef', 'fish', 'shrimp', 'rice', 'beans', 'corn', 'peas',
+                'carrot', 'potato', 'tomato', 'onion', 'garlic', 'lettuce', 'spinach',
+                'chocolate', 'cookie', 'cake', 'pie', 'icecream', 'donut', 'candy',
+                'coffee', 'tea', 'juice', 'water', 'soup', 'salad', 'sandwich'
+            ],
+            
+            // Music words
+            music: [
+                'song', 'note', 'beat', 'rhythm', 'melody', 'harmony', 'tune', 'lyrics',
+                'guitar', 'piano', 'drums', 'bass', 'violin', 'cello', 'flute', 'trumpet',
+                'saxophone', 'clarinet', 'harp', 'organ', 'singer', 'band', 'orchestra',
+                'concert', 'festival', 'performance', 'stage', 'audience', 'applause',
+                'album', 'single', 'track', 'playlist', 'genre', 'rock', 'jazz', 'blues',
+                'classical', 'pop', 'hiphop', 'electronic', 'folk', 'country', 'reggae'
+            ],
+            
+            // Sports words
+            sports: [
+                'ball', 'goal', 'game', 'team', 'player', 'coach', 'referee', 'stadium',
+                'football', 'soccer', 'basketball', 'baseball', 'tennis', 'golf', 'hockey',
+                'swimming', 'running', 'jumping', 'throwing', 'catching', 'dribbling',
+                'score', 'win', 'lose', 'tie', 'champion', 'tournament', 'medal', 'trophy',
+                'practice', 'training', 'exercise', 'fitness', 'health', 'athlete',
+                'volleyball', 'rugby', 'cricket', 'badminton', 'tabletennis', 'boxing'
+            ],
+            
+            // History words
+            history: [
+                'past', 'time', 'date', 'year', 'century', 'decade', 'era', 'age',
+                'ancient', 'medieval', 'modern', 'war', 'battle', 'peace', 'treaty',
+                'king', 'queen', 'emperor', 'president', 'leader', 'ruler', 'government',
+                'revolution', 'independence', 'freedom', 'rights', 'democracy', 'empire',
+                'civilization', 'culture', 'society', 'tradition', 'custom', 'heritage',
+                'discovery', 'invention', 'exploration', 'voyage', 'expedition', 'pioneer'
+            ],
+            
+            // General words (mix of common words)
+            general: [
                 'cat', 'dog', 'sun', 'run', 'book', 'fish', 'tree', 'bird', 'star', 'moon',
                 'happy', 'fast', 'blue', 'red', 'big', 'small', 'hot', 'cold', 'wet', 'dry',
-                'ball', 'jump', 'play', 'read', 'sing', 'food', 'milk', 'cake', 'sweet', 'water'
-            ],
-            
-            // Level 3-4: Mostly 4-5 letter words
-            intermediate: [
+                'ball', 'jump', 'play', 'read', 'sing', 'food', 'milk', 'cake', 'sweet', 'water',
                 'apple', 'beach', 'cloud', 'dream', 'earth', 'flower', 'grass', 'house', 
                 'light', 'music', 'night', 'ocean', 'peace', 'queen', 'river', 'smile',
-                'thunder', 'wonder', 'bright', 'clever', 'friendly', 'garden', 'happiness'
-            ],
-            
-            // Level 5-6: Mix of 5-6 letter words
-            advanced: [
-                'adventure', 'butterfly', 'challenge', 'discover', 'elephant', 'fantastic',
-                'gorgeous', 'harmony', 'imagination', 'journey', 'knowledge', 'mountain',
-                'notebook', 'oxygen', 'penguin', 'quantum', 'rainbow', 'science', 'telescope'
-            ],
-            
-            // Level 7-8: 6-7 letter words with some longer ones
-            expert: [
-                'absolute', 'brilliant', 'chemistry', 'diamond', 'eclipse', 'fractal',
-                'galaxy', 'horizon', 'infinity', 'jupiter', 'kingdom', 'lightning',
-                'mysterious', 'neutron', 'observe', 'paradox', 'quantum', 'radiation',
-                'satellite', 'tornado', 'universe', 'volcano', 'wavelength'
-            ],
-            
-            // Level 9-10: Longer, more complex words
-            master: [
-                'atmosphere', 'biodiversity', 'catastrophe', 'democracy', 'extraordinary',
-                'fundamental', 'generation', 'hypothesis', 'independent', 'justification',
-                'kilometer', 'laboratory', 'mathematics', 'noteworthy', 'opportunity',
-                'philosophy', 'qualification', 'revolutionary', 'sophisticated', 'technology',
-                'understanding', 'validation', 'wonderful', 'xenophobia', 'yesterday', 'zenith'
+                'thunder', 'wonder', 'bright', 'clever', 'friendly', 'garden', 'happiness',
+                'friend', 'family', 'school', 'teacher', 'student', 'pencil', 'paper', 'desk',
+                'morning', 'afternoon', 'evening', 'night', 'today', 'tomorrow', 'yesterday'
             ]
         };
+
+        // Build a custom word list based on selected interests
+        let selectedWords = [];
         
-        if (level <= 2) return wordLists.beginner;
-        else if (level <= 4) return wordLists.intermediate;
-        else if (level <= 6) return wordLists.advanced;
-        else if (level <= 8) return wordLists.expert;
-        else return wordLists.master;
+        // If no interests provided or empty, use general
+        if (!interests || interests.length === 0) {
+            selectedWords = interestWordSets.general;
+        } else {
+            // Add words from selected interests
+            interests.forEach(interest => {
+                const normalizedInterest = interest.toLowerCase().trim();
+                let matched = false;
+                
+                // Find matching interest sets (partial matches)
+                for (const [key, words] of Object.entries(interestWordSets)) {
+                    if (normalizedInterest.includes(key) || key.includes(normalizedInterest)) {
+                        selectedWords = [...selectedWords, ...words];
+                        matched = true;
+                    }
+                }
+                
+                // If no match found, add some general words
+                if (!matched) {
+                    selectedWords = [...selectedWords, ...interestWordSets.general.slice(0, 15)];
+                }
+            });
+        }
+        
+        // Remove duplicates
+        selectedWords = [...new Set(selectedWords)];
+
+        // Filter words by length based on level
+        let filteredWords = selectedWords;
+        
+        // Level-based word length filtering
+        if (level <= 2) {
+            // Level 1-2: Short words only (3-4 letters)
+            filteredWords = selectedWords.filter(w => w.length >= 3 && w.length <= 4);
+            if (filteredWords.length < 10) {
+                // Add some short general words if needed
+                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length <= 4)];
+            }
+        } 
+        else if (level <= 4) {
+            // Level 3-4: Short to medium (3-5 letters)
+            filteredWords = selectedWords.filter(w => w.length >= 3 && w.length <= 5);
+            if (filteredWords.length < 15) {
+                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length <= 5)];
+            }
+        } 
+        else if (level <= 6) {
+            // Level 5-6: Medium words (4-6 letters)
+            filteredWords = selectedWords.filter(w => w.length >= 4 && w.length <= 6);
+            if (filteredWords.length < 15) {
+                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length >= 4 && w.length <= 6)];
+            }
+        } 
+        else if (level <= 8) {
+            // Level 7-8: Medium to long (5-7 letters)
+            filteredWords = selectedWords.filter(w => w.length >= 5 && w.length <= 7);
+            if (filteredWords.length < 15) {
+                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length >= 5 && w.length <= 7)];
+            }
+        } 
+        else {
+            // Level 9-10: All lengths, including longer words
+            filteredWords = selectedWords.filter(w => w.length >= 4);
+            if (filteredWords.length < 15) {
+                filteredWords = [...filteredWords, ...interestWordSets.general];
+            }
+        }
+
+        // Remove duplicates again after filtering
+        filteredWords = [...new Set(filteredWords)];
+        
+        // If still empty, use general words
+        if (filteredWords.length === 0) {
+            filteredWords = interestWordSets.general;
+        }
+        
+        // Shuffle and return top 30 words
+        const shuffled = filteredWords.sort(() => 0.5 - Math.random());
+        return shuffled.slice(0, 30);
     }
 
     // Get default performance analysis
@@ -363,7 +503,7 @@ class AIService {
         return {
             newSpeed: data.speedMultiplier || 1.0,
             complexity: data.level > 5 ? 'hard' : data.level > 2 ? 'medium' : 'easy',
-            practiceWords: this.getFallbackWords(data.level).slice(0, 3),
+            practiceWords: this.getFallbackWords(data.level, data.interests).slice(0, 3),
             strengths: 'Keep practicing to see AI analysis!',
             weaknesses: 'Play more games for personalized insights',
             focusArea: 'Continue playing to identify patterns'

@@ -38,7 +38,7 @@ class TypingGame {
             reactionTimes: [],
             startTime: null,
             lastFrameTime: null,
-            interests: ['technology', 'science'],
+            interests: ['science', 'technology'], // Default interests
             targetWordsForLevel: currentLevelSettings.wordsToAdvance,
             wordsThisLevel: 0,
             accuracyStreak: 0,
@@ -173,15 +173,20 @@ class TypingGame {
         // Start game loop
         this.gameLoop();
         
-        // Auto-generate words on startup
+        // Auto-generate words on startup - pass interests
         setTimeout(() => {
             if (CONFIG.FEATURES.USE_AI) {
                 this.generateNewWords();
+            } else {
+                // Even without AI, use interest-specific fallback
+                this.state.wordList = this.aiService.getFallbackWords(this.state.level, this.state.interests);
+                console.log('Using interest-specific fallback words:', this.state.wordList.slice(0, 10));
             }
         }, 1000);
         
         console.log('Game initialized with 1366x768 resolution');
         console.log(`Level 1: ${this.state.levelDescription}`);
+        console.log('Selected interests:', this.state.interests);
     }
 
     // Show status message (replaces toast notifications)
@@ -560,6 +565,9 @@ class TypingGame {
         // Generate new words if needed, but keep existing ones if available
         if (CONFIG.FEATURES.USE_AI && this.state.wordList.length === 0) {
             setTimeout(() => this.generateNewWords(), 500);
+        } else if (!CONFIG.FEATURES.USE_AI && this.state.wordList.length === 0) {
+            // Even without AI, use interest-specific fallback
+            this.state.wordList = this.aiService.getFallbackWords(this.state.level, this.state.interests);
         }
     }
 
@@ -640,12 +648,18 @@ class TypingGame {
         
         console.log('Selected interests:', this.state.interests);
         
-        if (CONFIG.FEATURES.USE_AI) {
-            clearTimeout(this.generateWordsTimeout);
-            this.generateWordsTimeout = setTimeout(() => {
+        // Generate new words based on updated interests
+        clearTimeout(this.generateWordsTimeout);
+        this.generateWordsTimeout = setTimeout(() => {
+            if (CONFIG.FEATURES.USE_AI) {
                 this.generateNewWords();
-            }, 300);
-        }
+            } else {
+                // Even without AI, update word list with interest-specific words
+                this.state.wordList = this.aiService.getFallbackWords(this.state.level, this.state.interests);
+                console.log('Updated interest-specific words:', this.state.wordList.slice(0, 10));
+                this.showStatus('Words updated based on your interests!', 'success');
+            }
+        }, 300);
     }
 
     // Start game
@@ -1046,6 +1060,9 @@ class TypingGame {
             if (CONFIG.FEATURES.ADAPTIVE_DIFFICULTY) {
                 await this.analyzePerformance();
             }
+        } else {
+            // Even without AI, update word list for new level
+            this.state.wordList = this.aiService.getFallbackWords(this.state.level, this.state.interests);
         }
         
         // Resume game
@@ -1081,7 +1098,7 @@ class TypingGame {
         
         const wordList = this.state.wordList.length > 0 ? 
             this.state.wordList : 
-            this.aiService?.getFallbackWords(this.state.level) || 
+            this.aiService?.getFallbackWords(this.state.level, this.state.interests) || 
             ['cat', 'dog', 'sun', 'run', 'book', 'fish', 'tree', 'bird'];
 
         // ===========================================
@@ -1432,7 +1449,9 @@ class TypingGame {
         }
 
         if (!CONFIG.FEATURES.USE_AI) {
-            this.state.wordList = this.aiService.getFallbackWords(this.state.level);
+            // Pass interests to fallback even when AI is disabled
+            this.state.wordList = this.aiService.getFallbackWords(this.state.level, this.state.interests);
+            this.showStatus('Words loaded!', 'success');
             return;
         }
 
@@ -1447,7 +1466,7 @@ class TypingGame {
         try {
             const userData = {
                 level: this.state.level,
-                interests: this.state.interests,
+                interests: this.state.interests,  // Pass interests
                 mistakes: this.state.mistakes,
                 masteredWords: this.state.masteredWords,
                 wpm: this.calculateWPM()
@@ -1465,12 +1484,14 @@ class TypingGame {
                     await this.analyzePerformance();
                 }
             } else {
-                this.state.wordList = this.aiService.getFallbackWords(this.state.level);
+                // Already handled in generateWordList fallback
+                this.state.wordList = this.aiService.getFallbackWords(this.state.level, this.state.interests);
                 this.showStatus('Using fallback word list', 'info');
             }
         } catch (error) {
             console.error('AI generation failed:', error);
-            this.state.wordList = this.aiService.getFallbackWords(this.state.level);
+            // Use interest-specific fallback
+            this.state.wordList = this.aiService.getFallbackWords(this.state.level, this.state.interests);
             this.showStatus('⚠️ Using fallback words', 'warning');
         } finally {
             this.state.isGeneratingWords = false;
@@ -1497,7 +1518,8 @@ class TypingGame {
                     : 0,
                 mistakes: this.state.mistakes.slice(-5),
                 masteredWords: this.state.masteredWords.slice(-10),
-                speedMultiplier: this.state.speedMultiplier
+                speedMultiplier: this.state.speedMultiplier,
+                interests: this.state.interests // Pass interests
             };
 
             const analysis = await this.aiService.analyzePerformance(performanceData);
@@ -1632,17 +1654,18 @@ class TypingGame {
             `;
         }
 
-        // Also update recommended words based on performance
+        // Also update recommended words based on performance and interests
         if (this.elements.recommendedTags) {
-            // Generate word recommendations based on performance
+            // Generate word recommendations based on performance and interests
             let recommendedWords = [];
             
             if (accuracy < 70) {
-                // Recommend shorter words for accuracy practice
-                recommendedWords = ['cat', 'dog', 'sun', 'run', 'book', 'fish', 'tree', 'bird'].slice(0, 3);
+                // Recommend shorter words from interest sets for accuracy practice
+                const shortWords = this.state.wordList.filter(w => w.length <= 4);
+                recommendedWords = shortWords.slice(0, 3);
             } else if (wpm < 30) {
-                // Recommend common words for speed practice
-                recommendedWords = ['the', 'and', 'for', 'you', 'are', 'can'].slice(0, 3);
+                // Recommend common words from interests for speed practice
+                recommendedWords = this.state.wordList.slice(0, 3);
             } else {
                 // Recommend some interesting words from the word list
                 recommendedWords = this.state.wordList.slice(0, 3);
