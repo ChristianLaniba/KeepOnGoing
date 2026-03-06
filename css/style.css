@@ -2134,7 +2134,7 @@ body::after {
 /* Even smaller phones */
 @media (max-width: 480px) {
     .interest-text {
-        font-size: 1.5rem;
+        font-size: 1.6rem;
     }
     
     .ai-insight-header h3 {
@@ -2148,6 +2148,7 @@ body::after {
     .ai-insight-item {
         padding: 8px 5px;
         min-height: 70px;
+        min-width: 40px;
     }
     
     .game-canvas-container {
