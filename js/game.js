@@ -38,7 +38,7 @@ class TypingGame {
             reactionTimes: [],
             startTime: null,
             lastFrameTime: null,
-            interests: ['science', 'technology'], // Default interests
+            interests: [],
             targetWordsForLevel: currentLevelSettings.wordsToAdvance,
             wordsThisLevel: 0,
             accuracyStreak: 0,

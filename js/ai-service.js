@@ -308,7 +308,7 @@ class AIService {
     }
 
     /**
-     * Get fallback words based on level and interests - IMPROVED with interest-specific sets
+     * Get fallback words based on level and interests - IMPROVED with strict interest filtering
      */
     getFallbackWords(level, interests = []) {
         // Interest-specific word collections
@@ -329,7 +329,9 @@ class AIService {
                 'computer', 'keyboard', 'screen', 'digital', 'network', 'internet',
                 'browser', 'website', 'database', 'security', 'encryption', 'password',
                 'interface', 'user', 'experience', 'design', 'development', 'programming',
-                'function', 'variable', 'array', 'object', 'class', 'method'
+                'function', 'variable', 'array', 'object', 'class', 'method',
+                'cpu', 'gpu', 'ram', 'ssd', 'motherboard', 'processor', 'memory',
+                'bluetooth', 'wifi', 'ethernet', 'router', 'modem', 'firewall'
             ],
             
             // Nature words
@@ -399,101 +401,108 @@ class AIService {
                 'revolution', 'independence', 'freedom', 'rights', 'democracy', 'empire',
                 'civilization', 'culture', 'society', 'tradition', 'custom', 'heritage',
                 'discovery', 'invention', 'exploration', 'voyage', 'expedition', 'pioneer'
-            ],
-            
-            // General words (mix of common words)
-            general: [
-                'cat', 'dog', 'sun', 'run', 'book', 'fish', 'tree', 'bird', 'star', 'moon',
-                'happy', 'fast', 'blue', 'red', 'big', 'small', 'hot', 'cold', 'wet', 'dry',
-                'ball', 'jump', 'play', 'read', 'sing', 'food', 'milk', 'cake', 'sweet', 'water',
-                'apple', 'beach', 'cloud', 'dream', 'earth', 'flower', 'grass', 'house', 
-                'light', 'music', 'night', 'ocean', 'peace', 'queen', 'river', 'smile',
-                'thunder', 'wonder', 'bright', 'clever', 'friendly', 'garden', 'happiness',
-                'friend', 'family', 'school', 'teacher', 'student', 'pencil', 'paper', 'desk',
-                'morning', 'afternoon', 'evening', 'night', 'today', 'tomorrow', 'yesterday'
             ]
         };
 
-        // Build a custom word list based on selected interests
+        // If no interests selected, use a mix of general/common words
+        if (!interests || interests.length === 0) {
+            const generalWords = [
+                'cat', 'dog', 'sun', 'run', 'book', 'fish', 'tree', 'bird', 'star', 'moon',
+                'happy', 'fast', 'blue', 'red', 'big', 'small', 'hot', 'cold', 'wet', 'dry',
+                'ball', 'jump', 'play', 'read', 'sing', 'food', 'milk', 'cake', 'sweet', 'water',
+                'friend', 'family', 'home', 'school', 'car', 'bus', 'train', 'plane',
+                'morning', 'night', 'day', 'week', 'month', 'year', 'time', 'clock'
+            ];
+            return this.filterWordsByLevel(generalWords, level);
+        }
+
+        // Build a custom word list based ONLY on selected interests (NO general words)
         let selectedWords = [];
         
-        // If no interests provided or empty, use general
-        if (!interests || interests.length === 0) {
-            selectedWords = interestWordSets.general;
-        } else {
-            // Add words from selected interests
-            interests.forEach(interest => {
-                const normalizedInterest = interest.toLowerCase().trim();
-                let matched = false;
-                
-                // Find matching interest sets (partial matches)
+        // Add words ONLY from selected interests
+        interests.forEach(interest => {
+            const normalizedInterest = interest.toLowerCase().trim();
+            
+            // Direct matching
+            if (interestWordSets[normalizedInterest]) {
+                selectedWords = [...selectedWords, ...interestWordSets[normalizedInterest]];
+            } else {
+                // Try partial matching
                 for (const [key, words] of Object.entries(interestWordSets)) {
                     if (normalizedInterest.includes(key) || key.includes(normalizedInterest)) {
                         selectedWords = [...selectedWords, ...words];
-                        matched = true;
+                        break; // Only match the first relevant category
                     }
                 }
-                
-                // If no match found, add some general words
-                if (!matched) {
-                    selectedWords = [...selectedWords, ...interestWordSets.general.slice(0, 15)];
-                }
-            });
-        }
+            }
+        });
         
         // Remove duplicates
         selectedWords = [...new Set(selectedWords)];
-
-        // Filter words by length based on level
-        let filteredWords = selectedWords;
         
-        // Level-based word length filtering
+        // If somehow we ended up with no words (shouldn't happen), use the specific interest's words
+        if (selectedWords.length === 0 && interests.length > 0) {
+            // Try to get the first matching interest set
+            const firstInterest = interests[0].toLowerCase();
+            for (const [key, words] of Object.entries(interestWordSets)) {
+                if (firstInterest.includes(key) || key.includes(firstInterest)) {
+                    selectedWords = words;
+                    break;
+                }
+            }
+        }
+
+        // Filter by level-appropriate word lengths
+        return this.filterWordsByLevel(selectedWords, level);
+    }
+
+    /**
+     * Helper method to filter words by level-appropriate lengths
+     */
+    filterWordsByLevel(words, level) {
+        let filteredWords = [];
+        
         if (level <= 2) {
             // Level 1-2: Short words only (3-4 letters)
-            filteredWords = selectedWords.filter(w => w.length >= 3 && w.length <= 4);
-            if (filteredWords.length < 10) {
-                // Add some short general words if needed
-                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length <= 4)];
-            }
+            filteredWords = words.filter(w => w.length >= 3 && w.length <= 4);
         } 
         else if (level <= 4) {
             // Level 3-4: Short to medium (3-5 letters)
-            filteredWords = selectedWords.filter(w => w.length >= 3 && w.length <= 5);
-            if (filteredWords.length < 15) {
-                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length <= 5)];
-            }
+            filteredWords = words.filter(w => w.length >= 3 && w.length <= 5);
         } 
         else if (level <= 6) {
             // Level 5-6: Medium words (4-6 letters)
-            filteredWords = selectedWords.filter(w => w.length >= 4 && w.length <= 6);
-            if (filteredWords.length < 15) {
-                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length >= 4 && w.length <= 6)];
-            }
+            filteredWords = words.filter(w => w.length >= 4 && w.length <= 6);
         } 
         else if (level <= 8) {
             // Level 7-8: Medium to long (5-7 letters)
-            filteredWords = selectedWords.filter(w => w.length >= 5 && w.length <= 7);
-            if (filteredWords.length < 15) {
-                filteredWords = [...filteredWords, ...interestWordSets.general.filter(w => w.length >= 5 && w.length <= 7)];
-            }
+            filteredWords = words.filter(w => w.length >= 5 && w.length <= 7);
         } 
         else {
-            // Level 9-10: All lengths, including longer words
-            filteredWords = selectedWords.filter(w => w.length >= 4);
-            if (filteredWords.length < 15) {
-                filteredWords = [...filteredWords, ...interestWordSets.general];
+            // Level 9-10: All lengths
+            filteredWords = words.filter(w => w.length >= 4);
+        }
+        
+        // If filtering removed too many words, expand the range slightly
+        if (filteredWords.length < 15) {
+            if (level <= 2) {
+                filteredWords = words.filter(w => w.length >= 3 && w.length <= 5);
+            } else if (level <= 4) {
+                filteredWords = words.filter(w => w.length >= 3 && w.length <= 6);
+            } else if (level <= 6) {
+                filteredWords = words.filter(w => w.length >= 4 && w.length <= 7);
+            } else if (level <= 8) {
+                filteredWords = words.filter(w => w.length >= 4 && w.length <= 8);
             }
         }
-
-        // Remove duplicates again after filtering
-        filteredWords = [...new Set(filteredWords)];
         
-        // If still empty, use general words
-        if (filteredWords.length === 0) {
-            filteredWords = interestWordSets.general;
+        // If STILL too few words (unlikely with our rich word sets), use all words from the set
+        if (filteredWords.length < 10) {
+            filteredWords = words;
         }
         
-        // Shuffle and return top 30 words
+        // Remove duplicates and shuffle
+        filteredWords = [...new Set(filteredWords)];
         const shuffled = filteredWords.sort(() => 0.5 - Math.random());
         return shuffled.slice(0, 30);
     }
