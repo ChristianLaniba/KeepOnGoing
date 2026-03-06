@@ -767,7 +767,7 @@ body::after {
 /* Game Canvas Container - Use viewport-based sizing */
 .game-canvas-container {
     position: relative;
-    width: min(75%);
+    width: 100%;
     max-width: min(1024.5px, 95vw);
     margin: 0 auto;
     overflow: hidden;
@@ -777,7 +777,6 @@ body::after {
     transform: scale(1);
     transform-origin: center center;
 }
-
 /* Fallback for older browsers */
 @supports not (aspect-ratio: 1366 / 768) {
     .game-canvas-container {
@@ -2103,6 +2102,28 @@ body::after {
 
 /*Mobile Reponsiveness*/
 @media (max-width: 768px) {
+    .game-wrapper {
+        width: 100%;
+        overflow-x: hidden;
+        padding: 10px;
+    }
+    
+    .game-main {
+        width: 100%;
+        overflow-x: hidden;
+    }
+    
+    .game-area {
+        width: 100%;
+        overflow-x: hidden;
+    }
+    
+    .game-canvas-container {
+        width: 100%;
+        max-width: 95vw;
+        margin: 0 auto;
+    }
+
     /* Interests Section*/
     .interest-text {
         font-size: 2rem;
