@@ -1986,8 +1986,6 @@ body::after {
     }
 }
 
-
-
 /* Accessibility */
 @media (prefers-reduced-motion: reduce) {
     *,
