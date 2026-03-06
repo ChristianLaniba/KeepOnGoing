@@ -1,6 +1,3 @@
-/**
- * Storage Manager - Handles all localStorage operations
- */
 const StorageManager = {
     // Keys for localStorage
     keys: {
