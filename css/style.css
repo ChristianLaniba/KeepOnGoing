@@ -47,38 +47,9 @@
     font-style: normal;
 }
 
-/* Base font size for scaling */
+/* Viewport-based scaling */
 html {
-    font-size: 16px;
-}
-
-/* Mobile scaling - scale everything down proportionally */
-@media (max-width: 768px) {
-    html {
-        font-size: 12px;
-    }
-    
-    .game-wrapper {
-        padding: 10px;
-    }
-    
-    .game-canvas-container {
-        width: 95%;
-    }
-}
-
-@media (max-width: 480px) {
-    html {
-        font-size: 10px;
-    }
-    
-    .game-wrapper {
-        padding: 5px;
-    }
-    
-    .game-canvas-container {
-        width: 98%;
-    }
+    font-size: clamp(12px, 2vw, 16px);
 }
 
 /* Add a static background container */
@@ -89,6 +60,7 @@ body {
     color: var(--text-primary);
     line-height: 1.6;
     background-color: #001026;
+    overflow-x: hidden;
 }
 
 /* Static background image (non-repeat, behind) */
@@ -145,18 +117,18 @@ body::after {
     }
 }
 
-/* Game Wrapper */
+/* Game Wrapper - Use viewport width for padding */
 .game-wrapper {
     position: relative;
     z-index: 1;
     max-width: 1400px;
     margin: 0 auto;
-    padding: 20px;
+    padding: clamp(10px, 2vw, 20px);
 }
 
 /* Header Styles */
 .game-header {
-    margin-bottom: 30px;
+    margin-bottom: clamp(15px, 3vw, 30px);
     text-align: center;
 }
 
@@ -191,21 +163,21 @@ body::after {
 }
 
 .game-title {
-    font-size: 3.5em;
+    font-size: clamp(2.5em, 8vw, 3.5em);
     font-weight: 800;
     color: white;
     margin-bottom: 10px;
     position: relative;
     display: inline-block;
-    padding: 10px 30px;
+    padding: clamp(5px, 1vw, 10px) clamp(15px, 3vw, 30px);
     border-radius: 60px;
 }
 
 /* Title image styling */
 .title-image {
     min-height: auto;
-    margin: 25px auto;
-    max-width: 700px;
+    margin: clamp(15px, 3vw, 25px) auto;
+    max-width: min(700px, 90vw);
     width: 100%;
     background-position: center;
     background-repeat: no-repeat;
@@ -216,12 +188,12 @@ body::after {
 
 .game-main h1 {
     color: #ffffff;
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
     font-weight: normal;
     margin: 10px auto; 
     text-align: center;
     background: rgba(255, 253, 253, 0.3);
-    padding: 8px 20px;
+    padding: clamp(5px, 1.5vw, 8px) clamp(15px, 3vw, 20px);
     border-radius: 40px;
     display: inline-block; 
     backdrop-filter: blur(5px);
@@ -238,7 +210,7 @@ body::after {
 }
 
 .game-subtitle {
-    font-size: 1.2em;
+    font-size: clamp(1em, 3vw, 1.2em);
     color: rgba(255, 255, 255, 0.9);
     font-weight: 400;
     position: relative;
@@ -254,8 +226,8 @@ body::after {
     background: var(--card-bg);
     backdrop-filter: blur(5px);
     border-radius: var(--border-radius);
-    padding: 25px;
-    margin-bottom: 25px;
+    padding: clamp(15px, 3vw, 25px);
+    margin-bottom: clamp(15px, 3vw, 25px);
     box-shadow: var(--shadow-md);
     transition: var(--transition);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -270,13 +242,13 @@ body::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
-    padding-bottom: 10px;
+    margin-bottom: clamp(10px, 2vw, 20px);
+    padding-bottom: clamp(5px, 1vw, 10px);
     border-bottom: 2px solid var(--border-color);
 }
 
 .section-header h2 {
-    font-size: 1.5em;
+    font-size: clamp(1.2em, 4vw, 1.5em);
     font-weight: 600;
     color: var(--text-primary);
     display: flex;
@@ -318,12 +290,18 @@ body::after {
     margin-bottom: 10px;
 }
 
+@media (max-width: 600px) {
+    .input-wrapper {
+        flex-direction: column;
+    }
+}
+
 .api-input {
     flex: 1;
-    padding: 14px 18px;
+    padding: clamp(10px, 2vw, 14px) clamp(14px, 2.5vw, 18px);
     border: 2px solid var(--border-color);
     border-radius: var(--border-radius);
-    font-size: 1em;
+    font-size: clamp(0.9em, 2.5vw, 1em);
     transition: var(--transition);
     font-family: 'Inter', monospace;
 }
@@ -335,11 +313,12 @@ body::after {
 }
 
 .input-hint {
-    font-size: 0.9em;
+    font-size: clamp(0.8em, 2vw, 0.9em);
     color: var(--text-light);
     display: flex;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .hint-link {
@@ -352,11 +331,11 @@ body::after {
     text-decoration: underline;
 }
 
-/* Interests Section - Custom UI - 100% */
+/* Interests Section - Custom UI - Use viewport-based sizing */
 .interests-placeholder {
-    min-height: 500px;
-    margin: 25px auto;
-    max-width: 1000px;
+    min-height: auto;
+    margin: clamp(15px, 3vw, 25px) auto;
+    max-width: min(1000px, 95vw);
     width: 100%;
     background-image: url('../images/interests_selection.png'); 
     background-position: center;
@@ -380,7 +359,7 @@ body::after {
     align-items: center;
     padding: 23% 3% 15% 3%;
     box-sizing: border-box;
-    gap: 30px 40px;
+    gap: clamp(15px, 3vw, 40px);
 }
 
 /* Individual Interest Item */
@@ -389,7 +368,7 @@ body::after {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin: -10px 15px;
+    margin: clamp(-5px, -1vw, -10px) clamp(5px, 2vw, 15px);
     cursor: pointer;
     transition: all 0.3s ease;
     z-index: 1;
@@ -409,7 +388,7 @@ body::after {
 
 .interest-text {
     font-family: 'CustomInterests', 'Inter', sans-serif;
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 8vw, 3.5rem);
     color: #001026;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -425,8 +404,8 @@ body::after {
     transform: translate(-50%, -50%);
     width: 130%;
     height: 130%;
-    min-width: 150px;
-    min-height: 100px;
+    min-width: clamp(100px, 15vw, 150px);
+    min-height: clamp(70px, 10vw, 100px);
     background-image: url('../images/red_circle.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -445,11 +424,11 @@ body::after {
     scale: 1.1;
 }
 
-/* AI Insights Section - Custom Image Background - 100% */
+/* AI Insights Section - Custom Image Background */
 .insights-placeholder {
-    min-height: 500px;
-    margin: 25px auto;
-    max-width: 1200px;
+    min-height: auto;
+    margin: clamp(15px, 3vw, 25px) auto;
+    max-width: min(1200px, 95vw);
     width: 100%;
     background-image: url('../images/ai_insights1.png');
     background-position: center;
@@ -471,9 +450,23 @@ body::after {
     flex-direction: row;
     justify-content: space-between;
     align-items: flex-start;
-    gap: 15px;
-    padding: 15% 10% 10% 10%;
+    gap: clamp(5px, 1vw, 15px);
+    padding: 15% 8% 10% 8%;
     box-sizing: border-box;
+}
+
+@media (max-width: 700px) {
+    .ai-insights-container {
+        flex-direction: column;
+        gap: 10px;
+        padding: 12% 6% 15% 6%;
+        overflow-y: auto;
+    }
+    
+    .ai-insight-item {
+        width: 100%;
+        flex: none;
+    }
 }
 
 /* Individual Insight Items */
@@ -489,11 +482,11 @@ body::after {
     background-repeat: no-repeat;
     background-size: cover;
     background-color: transparent;
-    border-radius: 15px;
-    padding: 28px 18px;
+    border-radius: clamp(10px, 1.5vw, 15px);
+    padding: clamp(15px, 2vw, 28px) clamp(10px, 1.5vw, 18px);
     transition: var(--transition);
     height: fit-content;
-    min-height: 180px;
+    min-height: clamp(120px, 15vh, 180px);
 }
 
 /* Add specific positioning for each insight card */
@@ -513,6 +506,15 @@ body::after {
     bottom: -150px;
 }
 
+@media (max-width: 700px) {
+    .ai-insights-container .ai-insight-item:nth-child(1),
+    .ai-insights-container .ai-insight-item:nth-child(2),
+    .ai-insights-container .ai-insight-item:nth-child(3),
+    .ai-insights-container .ai-insight-item:nth-child(4) {
+        bottom: 0;
+    }
+}
+
 .ai-insight-item:hover {
     transform: translateY(-5px);
 }
@@ -527,12 +529,12 @@ body::after {
 }
 
 .ai-insight-header .icon {
-    font-size: 1.3em;
+    font-size: clamp(1.1em, 3vw, 1.3em);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
 }
 
 .ai-insight-header h3 {
-    font-size: 1.1em;
+    font-size: clamp(0.9em, 2.5vw, 1.1em);
     font-weight: 700;
     color: white;
     margin: 0;
@@ -547,7 +549,7 @@ body::after {
 
 .ai-insight-body {
     color: white;
-    font-size: 0.9em;
+    font-size: clamp(0.8em, 2vw, 0.9em);
     text-shadow: 
         1px 1px 0 #000000,
         -1px -1px 0 #000000,
@@ -589,7 +591,7 @@ body::after {
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Tags styling - transparent with better visibility */
+/* Tags styling */
 .tags-container {
     display: flex;
     flex-wrap: wrap;
@@ -639,7 +641,7 @@ body::after {
 }
 
 .growth-number {
-    font-size: 1.4em;
+    font-size: clamp(1.2em, 4vw, 1.4em);
     font-weight: 800;
     color: #48bb78;
     text-shadow: 
@@ -651,7 +653,7 @@ body::after {
 
 .growth-label {
     color: white;
-    font-size: 0.9em;
+    font-size: clamp(0.8em, 2vw, 0.9em);
 }
 
 /* Progress bar */
@@ -694,7 +696,7 @@ body::after {
     padding: 0 !important;
 }
 
-/* Game Status Indicator - Replaces toast notifications */
+/* Game Status Indicator */
 .game-status-container {
     text-align: center;
     margin: 15px 0 10px 0;
@@ -703,15 +705,15 @@ body::after {
 
 .game-status {
     display: inline-block;
-    padding: 10px 25px;
+    padding: clamp(8px, 1.5vw, 10px) clamp(15px, 3vw, 25px);
     border-radius: 40px;
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
     font-weight: 500;
     background: rgba(255, 255, 255, 0.95);
     box-shadow: var(--shadow-md);
     border: 1px solid rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease;
-    max-width: 600px;
+    max-width: min(600px, 90vw);
     margin: 0 auto;
 }
 
@@ -754,7 +756,7 @@ body::after {
     background: linear-gradient(180deg, #1a202c 0%, #2d3748 100%);
     border-radius: var(--border-radius);
     padding: 0;
-    margin-bottom: 25px;
+    margin-bottom: clamp(15px, 3vw, 25px);
     position: relative;
     overflow: hidden;
     box-shadow: var(--shadow-lg);
@@ -764,11 +766,11 @@ body::after {
     background-color: #0f172a;
 }
 
-/* Game Canvas Container - SCALED TO 75% */
+/* Game Canvas Container - Use viewport-based sizing */
 .game-canvas-container {
     position: relative;
-    width: 75%;
-    max-width: 1024.5px;
+    width: min(75%, 1024.5px);
+    max-width: min(1024.5px, 95vw);
     margin: 0 auto;
     overflow: hidden;
     border-radius: 8px;
@@ -782,7 +784,7 @@ body::after {
 @supports not (aspect-ratio: 1366 / 768) {
     .game-canvas-container {
         height: 0;
-        padding-bottom: 42.1875%;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
     }
 }
 
@@ -801,7 +803,7 @@ body::after {
     z-index: 1;
 }
 
-/* Game Canvas - Now fills container properly */
+/* Game Canvas */
 .game-canvas {
     position: absolute;
     top: 0;
@@ -812,10 +814,10 @@ body::after {
     z-index: 2;
 }
 
-/* Top Progress Bar - Scaled for 75% canvas */
+/* Top Progress Bar - Scale with canvas */
 .top-progress-container {
     position: absolute;
-    top: 15px;
+    top: 2%;
     left: 50%;
     transform: translateX(-50%);
     width: 60%;
@@ -827,7 +829,7 @@ body::after {
 
 .level-text-above {
     color: white;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 3vw, 1.5rem);
     font-weight: 600;
     margin-bottom: 4px;
     text-shadow: 
@@ -841,10 +843,10 @@ body::after {
 
 .progress-bar-top {
     width: 100%;
-    height: 20px;
+    height: clamp(12px, 2vh, 20px);
     background: rgba(26, 38, 76);
     border-radius: 30px;
-    border: 4px solid rgba(255, 255, 255, 0.9);
+    border: clamp(2px, 0.5vw, 4px) solid rgba(255, 255, 255, 0.9);
     overflow: hidden;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
@@ -867,33 +869,33 @@ body::after {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: 0.8rem;
+    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
     font-weight: 600;
     text-shadow: 1px 1px 2px black;
     z-index: 2;
     white-space: nowrap;
 }
 
-/* Life Sprites Container - Scaled for 75% canvas */
+/* Life Sprites Container - Scale with canvas */
 .life-sprites-container {
     position: absolute;
-    top: 15px;
-    right: 20px;
+    top: 2%;
+    right: 2%;
     display: flex;
-    gap: 10px;
+    gap: clamp(5px, 1vw, 10px);
     z-index: 30;
     pointer-events: none;
-    transform: scale(0.85);
+    transform: scale(clamp(0.6, 0.8vw, 0.85));
     transition: transform 0.3s ease;
 }
 
 .life-sprites-container:hover {
-    transform: scale(0.9);
+    transform: scale(clamp(0.65, 0.9vw, 0.9));
 }
 
 .life-sprite {
-    width: 50px;
-    height: 50px;
+    width: clamp(30px, 6vw, 50px);
+    height: clamp(30px, 6vw, 50px);
     object-fit: contain;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -969,7 +971,7 @@ body::after {
     }
 }
 
-/* In-playfield Start Button - Scaled for 75% canvas */
+/* In-playfield Start Button - Scale with canvas */
 .in-playfield-start {
     position: absolute;
     top: 50%;
@@ -979,10 +981,12 @@ body::after {
     text-align: center;
     background: rgba(150, 181, 185, 0.9);
     backdrop-filter: blur(5px);
-    padding: 30px;
-    border-radius: 30px;
+    padding: clamp(15px, 3vw, 30px);
+    border-radius: clamp(15px, 3vw, 30px);
     box-shadow: var(--shadow-xl);
     transition: var(--transition);
+    width: 90%;
+    max-width: 500px;
 }
 
 .in-playfield-start.hidden {
@@ -990,16 +994,16 @@ body::after {
 }
 
 .in-playfield-start .start-title {
-    font-size: 2rem;
+    font-size: clamp(1.5rem, 5vw, 2rem);
     color: white;
-    margin-bottom: 15px;
+    margin-bottom: clamp(10px, 2vw, 15px);
     font-family: 'FallingWordsFont', 'Inter', sans-serif;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .in-playfield-start .btn-start-large {
-    font-size: 1.6rem;
-    padding: 15px 40px;
+    font-size: clamp(1.2rem, 4vw, 1.6rem);
+    padding: clamp(10px, 2vw, 15px) clamp(20px, 5vw, 40px);
     border-radius: 60px;
     background: rgba(24, 36, 57);
     color: white;
@@ -1017,11 +1021,11 @@ body::after {
 
 .in-playfield-start .start-hint {
     color: rgba(255, 255, 255);
-    margin-top: 15px;
-    font-size: 1rem;
+    margin-top: clamp(10px, 2vw, 15px);
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
 }
 
-/* Playfield Input Container - Adjusted for 75% canvas */
+/* Playfield Input Container - Scale with canvas */
 .playfield-input-container {
     position: absolute;
     bottom: 7%;
@@ -1029,9 +1033,16 @@ body::after {
     transform: translateX(-50%) rotate(-2.5deg);
     width: 45%;
     max-width: 55%;
-    min-width: 55%;
+    min-width: 45%;
     z-index: 25;
     transition: var(--transition);
+}
+
+@media (max-width: 600px) {
+    .playfield-input-container {
+        width: 60%;
+        bottom: 5%;
+    }
 }
 
 .playfield-input-container.hidden {
@@ -1040,8 +1051,8 @@ body::after {
 
 .playfield-word-input {
     width: 100%;
-    padding: 12px 20px;
-    font-size: 3.5rem;
+    padding: clamp(8px, 1.5vw, 12px) clamp(12px, 2vw, 20px);
+    font-size: clamp(2rem, 8vw, 3.5rem);
     font-family: 'FallingWordsFont';
     border: none !important;
     outline: none !important;
@@ -1061,7 +1072,7 @@ body::after {
 
 .playfield-word-input::placeholder {
     color: rgba(255, 255, 255, 0.5);
-    font-size: 2.5rem;
+    font-size: clamp(1.5rem, 6vw, 2.5rem);
     font-family: 'FallingWordsFont';
     text-shadow: 
         1px 1px 0 #000000,
@@ -1070,7 +1081,7 @@ body::after {
         -1px 1px 0 #000000;
 }
 
-/* Pause Menu - SCALED TO 75% */
+/* Pause Menu - Scale with canvas */
 .pause-menu {
     position: absolute;
     top: 0;
@@ -1094,11 +1105,11 @@ body::after {
     text-align: center;
     background: rgba(150, 181, 185, 0.9);
     backdrop-filter: blur(5px);
-    padding: 30px 40px;
-    border-radius: 30px;
-    border: 9px solid rgba(255, 255, 255, 0.95);
+    padding: clamp(20px, 4vw, 30px) clamp(25px, 5vw, 40px);
+    border-radius: clamp(20px, 4vw, 30px);
+    border: clamp(5px, 1vw, 9px) solid rgba(255, 255, 255, 0.95);
     box-shadow: var(--shadow-xl), 0 0 50px rgba(102, 126, 234, 0.3);
-    min-width: 340px;
+    min-width: min(340px, 80vw);
     animation: pauseAppear 0.4s ease;
 }
 
@@ -1114,9 +1125,9 @@ body::after {
 }
 
 .pause-title {
-    font-size: 2.25rem;
+    font-size: clamp(1.8rem, 6vw, 2.25rem);
     color: white;
-    margin-bottom: 19px;
+    margin-bottom: clamp(15px, 3vw, 19px);
     font-family: 'FallingWordsFont', 'Inter', sans-serif;
     background: #ffffff;
     -webkit-background-clip: text;
@@ -1125,9 +1136,9 @@ body::after {
 }
 
 .btn-pause {
-    font-size: 1.35rem;
-    padding: 9px 26px;
-    margin: 9px 0;
+    font-size: clamp(1.1rem, 4vw, 1.35rem);
+    padding: clamp(7px, 1.5vw, 9px) clamp(18px, 4vw, 26px);
+    margin: clamp(7px, 1.5vw, 9px) 0;
     border-radius: 45px;
     background: rgba(0, 16, 38);
     color: white;
@@ -1145,7 +1156,7 @@ body::after {
     box-shadow: 0 0 30px rgba(0, 16, 38, 0.8);
 }
 
-/* Level Complete Overlay - SCALED TO 75% */
+/* Level Complete Overlay - Scale with canvas */
 .level-complete-overlay {
     position: absolute;
     top: 0;
@@ -1169,11 +1180,11 @@ body::after {
     text-align: center;
     background: rgba(150, 181, 185);
     backdrop-filter: blur(5px);
-    padding: 15px 37px;
-    border-radius: 30px;
-    border: 9px solid rgba(255, 255, 255);
+    padding: clamp(10px, 2vw, 15px) clamp(20px, 5vw, 37px);
+    border-radius: clamp(20px, 4vw, 30px);
+    border: clamp(5px, 1vw, 9px) solid rgba(255, 255, 255);
     box-shadow: var(--shadow-xl), 0 0 50px rgba(89, 107, 187, 0.3);
-    min-width: 375px;
+    min-width: min(375px, 85vw);
     animation: levelCompleteAppear 0.4s ease;
 }
 
@@ -1189,9 +1200,9 @@ body::after {
 }
 
 .level-complete-title {
-    font-size: 2.25rem;
+    font-size: clamp(1.8rem, 6vw, 2.25rem);
     color: white;
-    margin-bottom: 19px;
+    margin-bottom: clamp(15px, 3vw, 19px);
     font-family: 'FallingWordsFont', 'Inter', sans-serif;
     background: #ffffff;
     -webkit-background-clip: text;
@@ -1201,20 +1212,20 @@ body::after {
 }
 
 .next-level-info {
-    margin: 19px 0 22px;
+    margin: clamp(15px, 3vw, 19px) 0 clamp(15px, 3vw, 22px);
 }
 
 .next-level-title {
-    font-size: 1.35rem;
+    font-size: clamp(1.1rem, 4vw, 1.35rem);
     color: rgba(255, 255, 255, 0.9);
-    margin-bottom: 15px;
+    margin-bottom: clamp(10px, 2vw, 15px);
     font-weight: 600;
 }
 
 .next-level-title span {
     color: #ffffff;
     font-weight: 800;
-    font-size: 1.5rem;
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
     background: rgba(0, 16, 38, 0.9);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -1223,9 +1234,9 @@ body::after {
 
 .difficulty-card {
     background: rgba(255, 255, 255, 0.9);
-    border-radius: 22px;
-    padding: 15px;
-    margin-bottom: 15px;
+    border-radius: clamp(15px, 3vw, 22px);
+    padding: clamp(10px, 2vw, 15px);
+    margin-bottom: clamp(10px, 2vw, 15px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
@@ -1239,19 +1250,19 @@ body::after {
 }
 
 .difficulty-icon {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 3vw, 1.2rem);
     filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
 .difficulty-label {
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     color: rgba(0, 0, 0, 0.8);
     text-transform: uppercase;
     letter-spacing: 2px;
 }
 
 .difficulty-value {
-    font-size: 2.1rem;
+    font-size: clamp(1.5rem, 6vw, 2.1rem);
     font-weight: 800;
     margin-bottom: 6px;
     text-transform: uppercase;
@@ -1285,11 +1296,11 @@ body::after {
 }
 
 .difficulty-description {
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2.5vw, 1rem);
     color: rgba(255, 255, 255, 0.9);
     font-style: italic;
     background: rgba(0, 0, 0, 0.3);
-    padding: 7px 13px;
+    padding: clamp(5px, 1vw, 7px) clamp(8px, 2vw, 13px);
     border-radius: 37px;
     display: inline-block;
 }
@@ -1297,22 +1308,23 @@ body::after {
 .next-level-stats {
     display: flex;
     justify-content: center;
-    gap: 11px;
-    margin-top: 15px;
+    gap: clamp(5px, 1.5vw, 11px);
+    margin-top: clamp(10px, 2vw, 15px);
+    flex-wrap: wrap;
 }
 
 .stat-pill {
     background: rgba(255, 255, 255, 0.9);
     border-radius: 30px;
-    padding: 9px 15px;
-    min-width: 82px;
+    padding: clamp(6px, 1.5vw, 9px) clamp(10px, 2vw, 15px);
+    min-width: clamp(60px, 15vw, 82px);
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: var(--transition);
 }
 
 .stat-pill-label {
     display: block;
-    font-size: 0.6rem;
+    font-size: clamp(0.5rem, 1.5vw, 0.6rem);
     color: rgba(0, 16, 38, 0.9);
     margin-bottom: 4px;
     text-transform: uppercase;
@@ -1321,7 +1333,7 @@ body::after {
 
 .stat-pill-value {
     display: block;
-    font-size: 1.2rem;
+    font-size: clamp(0.9rem, 3vw, 1.2rem);
     font-weight: 700;
     color: white;
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
@@ -1332,8 +1344,8 @@ body::after {
 }
 
 .btn-level-continue {
-    font-size: 1.5rem;
-    padding: 11px 30px;
+    font-size: clamp(1.2rem, 5vw, 1.5rem);
+    padding: clamp(8px, 1.5vw, 11px) clamp(20px, 5vw, 30px);
     border-radius: 45px;
     background: rgba(0, 16, 38, 0.9);
     color: white;
@@ -1344,7 +1356,7 @@ body::after {
     width: 100%;
     font-weight: 600;
     letter-spacing: 2px;
-    margin-top: 11px;
+    margin-top: clamp(8px, 1.5vw, 11px);
 }
 
 .btn-level-continue:hover {
@@ -1356,28 +1368,28 @@ body::after {
 /* Tip in top-left corner */
 .pause-tip {
     position: absolute;
-    top: 15px;
-    left: 20px;
+    top: 2%;
+    left: 2%;
     z-index: 35;
     background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(4px);
     color: rgba(255, 255, 255, 0.9);
-    padding: 6px 12px;
+    padding: clamp(4px, 1vw, 6px) clamp(8px, 2vw, 12px);
     border-radius: 30px;
-    font-size: 0.8rem;
+    font-size: clamp(0.6rem, 2vw, 0.8rem);
     font-weight: 500;
     border: 1px solid rgba(255, 255, 255, 0.2);
     pointer-events: none;
     box-shadow: var(--shadow-sm);
 }
 
-/* Falling Words - Scaled for 75% canvas */
+/* Falling Words - Scale with canvas */
 .word {
     position: absolute;
     padding: 4px 12px;
     background: transparent;
     color: #e6e6e6;
-    font-size: 3.2rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
     font-weight: 600;
     box-shadow: none;
     white-space: nowrap;
@@ -1408,19 +1420,19 @@ body::after {
 }
 
 .word[data-length="short"] {
-    font-size: 3.6rem;
+    font-size: clamp(2.2rem, 7vw, 3.6rem);
 }
 
 .word[data-length="medium"] {
-    font-size: 3.2rem;
+    font-size: clamp(2rem, 6vw, 3.2rem);
 }
 
 .word[data-length="long"] {
-    font-size: 2.8rem;
+    font-size: clamp(1.8rem, 5vw, 2.8rem);
 }
 
 .word[data-length="very-long"] {
-    font-size: 2.3rem;
+    font-size: clamp(1.5rem, 4vw, 2.3rem);
 }
 
 .word.lowest-word {
@@ -1474,8 +1486,8 @@ body::after {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(5deg);
-    width: 350px;
-    height: 175px;
+    width: min(350px, 25vw);
+    height: min(175px, 12.5vw);
     background-image: url('../images/game_word_bg.png');
     background-size: contain;
     background-repeat: no-repeat;
@@ -1586,7 +1598,7 @@ body::after {
 
 /* Game Controls */
 .game-controls {
-    margin-bottom: 25px;
+    margin-bottom: clamp(15px, 3vw, 25px);
 }
 
 .input-area {
@@ -1595,10 +1607,16 @@ body::after {
     margin-bottom: 15px;
 }
 
+@media (max-width: 600px) {
+    .input-area {
+        flex-direction: column;
+    }
+}
+
 .word-input {
     flex: 1;
-    padding: 18px 25px;
-    font-size: 1.3em;
+    padding: clamp(12px, 2vw, 18px) clamp(15px, 3vw, 25px);
+    font-size: clamp(1.1em, 3vw, 1.3em);
     border: 3px solid var(--border-color);
     border-radius: 50px;
     transition: var(--transition);
@@ -1622,11 +1640,17 @@ body::after {
     gap: 10px;
 }
 
+@media (max-width: 600px) {
+    .button-group {
+        flex-direction: column;
+    }
+}
+
 .btn {
-    padding: 12px 24px;
+    padding: clamp(8px, 1.5vw, 12px) clamp(15px, 3vw, 24px);
     border: none;
     border-radius: 50px;
-    font-size: 1em;
+    font-size: clamp(0.9em, 2.5vw, 1em);
     font-weight: 600;
     cursor: pointer;
     transition: var(--transition);
@@ -1693,12 +1717,12 @@ body::after {
 }
 
 .btn-large {
-    padding: 15px 35px;
-    font-size: 1.1em;
+    padding: clamp(10px, 2vw, 15px) clamp(25px, 5vw, 35px);
+    font-size: clamp(1em, 3vw, 1.1em);
 }
 
 .btn-icon {
-    padding: 12px;
+    padding: clamp(8px, 1.5vw, 12px);
     border-radius: 50%;
     background: var(--light-bg);
     color: var(--text-primary);
@@ -1710,18 +1734,18 @@ body::after {
 }
 
 /* ============================================
-   GAME OVER MODAL - SCALED TO 75%
+   GAME OVER MODAL - Scale with canvas
    ============================================ */
 .game-over-modal {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 337px;
+    width: min(337px, 85vw);
     background: rgba(150, 181, 185);
     backdrop-filter: blur(10px);
-    border-radius: 30px;
-    padding: 26px 30px;
+    border-radius: clamp(20px, 4vw, 30px);
+    padding: clamp(18px, 3vw, 26px) clamp(20px, 4vw, 30px);
     text-align: center;
     z-index: 1000;
     box-shadow: 
@@ -1729,7 +1753,7 @@ body::after {
         0 0 0 2px rgba(0, 9, 133, 0.3),
         0 0 30px rgba(102, 126, 234, 0.3);
     animation: gameOverAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-    border: 9px solid rgba(255, 255, 255, 0.9);
+    border: clamp(5px, 1vw, 9px) solid rgba(255, 255, 255, 0.9);
 }
 
 .game-over-modal.hidden {
@@ -1751,8 +1775,8 @@ body::after {
 }
 
 .game-over-icon {
-    font-size: 3.4rem;
-    margin-bottom: 11px;
+    font-size: clamp(2.5rem, 8vw, 3.4rem);
+    margin-bottom: clamp(8px, 1.5vw, 11px);
     filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.5));
     animation: iconFloat 3s ease-in-out infinite;
 }
@@ -1770,10 +1794,10 @@ body::after {
 }
 
 .game-over-title {
-    font-size: 2.1rem;
+    font-size: clamp(1.8rem, 6vw, 2.1rem);
     font-weight: 800;
     color: white;
-    margin-bottom: 11px;
+    margin-bottom: clamp(8px, 1.5vw, 11px);
     font-family: 'FallingWordsFont', 'Inter', sans-serif;
     background: #ffffff;
     -webkit-background-clip: text;
@@ -1784,9 +1808,9 @@ body::after {
 
 .game-over-stats {
     background: rgba(24, 36, 57);
-    border-radius: 22px;
-    padding: 15px;
-    margin-bottom: 19px;
+    border-radius: clamp(15px, 3vw, 22px);
+    padding: clamp(10px, 2vw, 15px);
+    margin-bottom: clamp(15px, 3vw, 19px);
 }
 
 .stat-row {
@@ -1801,7 +1825,7 @@ body::after {
 
 .stat-label {
     color: rgba(24, 36, 57);
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -1809,12 +1833,12 @@ body::after {
 }
 
 .stat-label span {
-    font-size: 1.05rem;
+    font-size: clamp(0.9rem, 3vw, 1.05rem);
 }
 
 .stat-value {
     color: white;
-    font-size: 1.13rem;
+    font-size: clamp(0.9rem, 3vw, 1.13rem);
     font-weight: 700;
     background: #667eea;
     -webkit-background-clip: text;
@@ -1825,22 +1849,28 @@ body::after {
 
 .game-over-actions {
     display: flex;
-    gap: 9px;
+    gap: clamp(5px, 1.5vw, 9px);
     justify-content: center;
-    margin-top: 19px;
+    margin-top: clamp(15px, 3vw, 19px);
+}
+
+@media (max-width: 480px) {
+    .game-over-actions {
+        flex-direction: column;
+    }
 }
 
 .btn-game-over {
-    padding: 9px 22px;
+    padding: clamp(7px, 1.5vw, 9px) clamp(15px, 3vw, 22px);
     border: none;
     border-radius: 45px;
-    font-size: 0.9rem;
+    font-size: clamp(0.8rem, 2.5vw, 0.9rem);
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s ease;
     font-family: 'FallingWordsFont', 'Inter', sans-serif;
     letter-spacing: 1px;
-    min-width: 120px;
+    min-width: clamp(100px, 25vw, 120px);
 }
 
 .btn-game-over.primary {
