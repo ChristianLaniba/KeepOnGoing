@@ -2054,11 +2054,11 @@ body::after {
 @media (max-width: 768px) {
     /* Interests Section - 50% size text */
     .interest-text {
-        font-size: 1.8rem; /* Approximately 50% of 3.5rem */
+        font-size: 2rem; /* Approximately 50% of 3.5rem */
     }
     
     .interests-container {
-        padding: 22% 3% 14% 3%;
+        padding: 24% 3% 14% 3%;
         gap: 15px;
     }
     
@@ -2074,7 +2074,8 @@ body::after {
     
     .ai-insight-item {
         padding: 12px 8px;
-        min-height: 90px;
+        min-height: 120px;
+        min-width: 50px;
     }
     
     .ai-insight-header h3 {
