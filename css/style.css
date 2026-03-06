@@ -359,7 +359,7 @@ body::after {
     align-items: center;
     padding: 23% 3% 15% 3%;
     box-sizing: border-box;
-    gap: clamp(15px, 3vw, 40px);
+    gap: clamp(15px, 3vw, 22px);
 }
 
 /* Individual Interest Item */
@@ -817,7 +817,7 @@ body::after {
 /* Top Progress Bar - Scale with canvas */
 .top-progress-container {
     position: absolute;
-    top: 2%;
+    top: 0%;
     left: 50%;
     transform: translateX(-50%);
     width: 60%;
@@ -843,7 +843,7 @@ body::after {
 
 .progress-bar-top {
     width: 100%;
-    height: clamp(12px, 2vh, 20px);
+    height: clamp(20px, 2vh, 20px);
     background: rgba(26, 38, 76);
     border-radius: 30px;
     border: clamp(2px, 0.5vw, 4px) solid rgba(255, 255, 255, 0.9);
@@ -869,7 +869,7 @@ body::after {
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
-    font-size: clamp(0.6rem, 1.5vw, 0.8rem);
+    font-size: clamp(0.4rem, 1.5vw, 0.6rem);
     font-weight: 600;
     text-shadow: 1px 1px 2px black;
     z-index: 2;
