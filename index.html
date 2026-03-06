@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keep On Going!</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="game-wrapper">
+        <!-- Header Section -->
+        <header class="game-header">
+            <div class="header-content">
+                <h1 class="game-title">
+                    <span class="title-icon"></span>
+                    <img src="images/title.png" alt="Keep On Going!" class="title-image">
+                </h1>
+            </div>
+        </header>
+
+        <!-- Main Game Container -->
+        <main class="game-main">
+            <!-- Notice about API -->
+            <section class="api-section card">
+                <div class="section-header">
+                    <h2><span class="icon">🔑</span> (for debugging) API Status</h2>
+                    <span class="badge free-badge">Active</span>
+                </div>
+                <div class="api-status">
+                    <p class="status-message">
+                        <span class="status-icon">✅</span>
+                        API Key is hardcoded and ready to use!
+                    </p>
+                    <p class="input-hint">
+                        <span class="hint-icon">💡</span>
+                        Get your own free key from 
+                        <a href="https://makersuite.google.com/app/apikey" target="_blank" class="hint-link">
+                            Google AI Studio
+                        </a>
+                    </p>
+                </div>
+            </section>
+
+            <!-- Interests Section - Custom UI -->
+            <div class="interests-placeholder" id="interestsPlaceholder">
+                <div class="interests-container" id="interestsContainer">
+                </div>      
+            </div>
+            <h1>Note: It may take a while for the game to load your interests</h1>
+
+            <!-- Game Status Indicator (replaces toast notifications) -->
+            <div class="game-status-container">
+                <div class="game-status" id="gameStatusIndicator"></div>
+            </div>
+
+            <!-- Game Area -->
+            <div class="game-area" id="gameArea">
+                <div class="game-canvas-container" id="gameCanvasContainer">
+                    <div class="game-canvas" id="gameCanvas">
+                        <!-- Falling words will be dynamically added here -->
+                        <!-- Text box image container (hidden by default) -->
+                        <div class="text-box-container hidden" id="textBoxContainer">
+                            <img src="images/game_text_box.png" alt="Type here" class="text-box-image">
+                        </div>
+                        <!-- In-playfield start button and input will be added by JavaScript -->
+                    </div>
+                </div>
+                <div class="ground-line"></div>
+                
+                <!-- Game Overlay for paused state -->
+                <div class="game-overlay hidden" id="gameOverlay">
+                    <div class="overlay-content">
+                        <span class="overlay-icon"></span>
+                        <h3>Game Paused</h3>
+                        <p>Press Resume to continue</p>
+                    </div>
+                </div>
+
+                <!-- Pause Menu (hidden by default) -->
+                <div class="pause-menu hidden" id="pauseMenu">
+                    <div class="pause-content">
+                        <h2 class="pause-title">Game Paused</h2>
+                        <button class="btn-pause" id="resumeGameBtn">Resume</button>
+                        <button class="btn-pause" id="restartGameBtn">Restart Game</button>
+                    </div>
+                </div>
+
+                <!-- Level Complete Overlay (in game container) -->
+                <div class="level-complete-overlay hidden" id="levelCompleteOverlay">
+                    <div class="level-complete-content">
+                        <h2 class="level-complete-title">Level Complete!</h2>
+                        <div class="next-level-info">
+                            <h3 class="next-level-title">Next Level: <span id="nextLevelNumber">2</span></h3>
+                            <div class="difficulty-card">
+                                <div class="difficulty-header">
+                                </div>
+                                <div class="difficulty-value" id="nextLevelDifficulty">Easy</div>
+                            </div>
+                            <div class="next-level-stats">
+                                <div class="stat-pill">
+                                    <span class="stat-pill-label">Speed</span>
+                                    <span class="stat-pill-value" id="nextLevelSpeed">0.1x</span>
+                                </div>
+                                <div class="stat-pill">
+                                    <span class="stat-pill-label">Words/Screen</span>
+                                    <span class="stat-pill-value" id="nextLevelWordsPerScreen">2</span>
+                                </div>
+                                <div class="stat-pill">
+                                    <span class="stat-pill-label">Words to Advance</span>
+                                    <span class="stat-pill-value" id="nextLevelWordsNeeded">15</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn-level-continue" id="continueToNextLevelBtn">Continue to Next Level</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Game Controls (simplified) -->
+            <div class="game-controls">
+                <div class="input-area" style="display: none;">
+                    <!-- Hidden - using in-playfield input instead -->
+                    <input type="text" id="wordInput" class="word-input" 
+                           placeholder="Type the word here..." 
+                           autocomplete="off" 
+                           disabled>
+                </div>
+            </div>
+
+            <!-- AI Insights Panel - Custom Image Background -->
+            <section class="insights-panel card">
+                <div class="insights-placeholder" id="aiInsightsPlaceholder">
+                    <div class="ai-insights-container" id="aiInsightsContainer">
+                        <!-- Performance Analysis Card -->
+                        <div class="ai-insight-item">
+                            <div class="ai-insight-header">
+                                <h3>Performance Analysis</h3>
+                            </div>
+                            <div class="ai-insight-body" id="performanceInsight">
+                                <p class="insight-text">Start playing to see AI analysis...</p>
+                                <div class="metrics">
+                                    <div class="metric">
+                                        <span class="metric-label">Avg Reaction:</span>
+                                        <span class="metric-value" id="avgReaction">-</span>
+                                    </div>
+                                    <div class="metric">
+                                        <span class="metric-label">WPM:</span>
+                                        <span class="metric-value" id="wpmDisplay">-</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recommended Words Card -->
+                        <div class="ai-insight-item">
+                            <div class="ai-insight-header">
+                                <h3>Recommended Words</h3>
+                            </div>
+                            <div class="ai-insight-body" id="recommendedInsight">
+                                <div class="tags-container" id="recommendedTags">
+                                    <span class="tag tag-suggestion">Play to generate</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Common Mistakes Card -->
+                        <div class="ai-insight-item">
+                            <div class="ai-insight-header">
+                                <h3>Common Mistakes</h3>
+                            </div>
+                            <div class="ai-insight-body" id="mistakesInsight">
+                                <div class="tags-container" id="mistakeTags">
+                                    <span class="tag tag-mistake">No mistakes yet</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Vocabulary Growth Card -->
+                        <div class="ai-insight-item">
+                            <div class="ai-insight-header">
+                                <h3>Vocabulary Growth</h3>
+                            </div>
+                            <div class="ai-insight-body" id="growthInsight">
+                                <div class="growth-stats">
+                                    <div class="growth-stat">
+                                        <span class="growth-number" id="masteredCount">0</span>
+                                        <span class="growth-label">words mastered</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" id="vocabProgress" style="width: 0%"></div>
+                                    </div>
+                                    <p class="insight-text" id="growthText">New words learned this session</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Hidden original elements (keep for JavaScript functionality) -->
+                <div style="display: none;">
+                    <div class="panel-header" id="insightsHeader">
+                        <h2><span class="icon">🤖</span> AI Learning Insights</h2>
+                        <div class="panel-controls">
+                            <span class="loading-spinner hidden" id="aiLoading"></span>
+                            <button id="refreshInsightsBtn" class="btn btn-icon" title="Refresh insights">
+                                🔄
+                            </button>
+                            <button id="toggleInsightsBtn" class="btn btn-icon">
+                                ▼
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="insights-content" id="insightsContent">
+                        <div class="insights-grid">
+                            <!-- Keep the original structure but hidden -->
+                            <div class="insight-card"></div>
+                            <div class="insight-card"></div>
+                            <div class="insight-card"></div>
+                            <div class="insight-card"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Original Modals (kept but hidden - we now use in-canvas modals) -->
+        <div class="modal-overlay hidden" id="victoryModal" style="display: none;">
+            <div class="modal">
+                <div class="modal-icon">🏆</div>
+                <h2 class="modal-title">Victory!</h2>
+                <p class="modal-text">
+                    Congratulations! You've completed all 10 levels!<br>
+                    You've mastered <span id="victoryWords">0</span> words with 
+                    <span id="victoryAccuracy">0</span>% accuracy!
+                </p>
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="location.reload()">Play Again</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-overlay hidden" id="gameOverModal" style="display: none;">
+            <div class="modal">
+                <h2 class="modal-title">Game Over</h2>
+                <p class="modal-text">
+                    You reached Level <span id="gameOverLevel">1</span><br>
+                    Words typed: <span id="gameOverWords">0</span><br>
+                    Keep practicing!
+                </p>
+                <div class="modal-buttons">
+                    <button class="btn btn-primary" onclick="location.reload()">Try Again</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toast Container (hidden) -->
+        <div class="toast-container" id="toastContainer" style="display: none !important;"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ai-service.js"></script>
+    <script src="js/game.js"></script>
+</body>
+</html>
